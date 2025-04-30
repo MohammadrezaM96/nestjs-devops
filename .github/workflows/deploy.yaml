@@ -32,3 +32,8 @@ jobs:
       run: |
         echo "📦 Image: ${{ steps.helm-values.outputs.image_repo }}:${{ steps.helm-values.outputs.image_tag }}"
         echo "🌱 Environment: ${{ steps.helm-values.outputs.node_env }}"
+        
+    - name: Build Docker image
+      run: |
+        docker build -t ${{ steps.helm-values.outputs.image_repo }}:${{ steps.helm-values.outputs.image_tag }} .
+
