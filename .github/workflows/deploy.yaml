@@ -1,0 +1,34 @@
+name: CI/CD with Helm values
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Install yq
+      run: |
+        sudo add-apt-repository ppa:rmescandon/yq -y
+        sudo apt update && sudo apt install yq -y
+
+    - name: Read Helm values
+      id: helm-values
+      run: |
+        IMAGE_REPO=$(yq eval '.image.repository' devops/helm/nestjs/values.yaml)
+        IMAGE_TAG=$(yq eval '.image.tag' devops/helm/nestjs/values.yaml)
+        NODE_ENV=$(yq eval '.env.NODE_ENV' devops/helm/nestjs/values.yaml)
+
+        echo "image_repo=$IMAGE_REPO" >> $GITHUB_OUTPUT
+        echo "image_tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
+        echo "node_env=$NODE_ENV" >> $GITHUB_OUTPUT
+
+    - name: Show parsed values
+      run: |
+        echo "📦 Image: ${{ steps.helm-values.outputs.image_repo }}:${{ steps.helm-values.outputs.image_tag }}"
+        echo "🌱 Environment: ${{ steps.helm-values.outputs.node_env }}"
