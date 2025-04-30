@@ -1,0 +1,10 @@
+image:
+  repository: ghcr.io/mohammadrezam96/nestjs-devops
+  tag: latest
+
+env:
+  NODE_ENV: production
+  API_KEY: ""
+
+service:
+  port: 3000
